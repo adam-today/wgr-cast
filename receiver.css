@@ -1,0 +1,88 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   Weird Good Radio — Styled Media Receiver
+   ---------------------------------------------------------------------------
+   This is the CSS file you paste as the "Receiver styling" URL in the Google
+   Cast SDK Developer Console (Styled Media Receiver type). Google hosts the
+   actual receiver runtime; these custom properties on <cast-media-player>
+   re-theme the stock now-playing card.
+
+   Hosted publicly over HTTPS via GitHub Pages from a small PUBLIC repo that holds
+   ONLY this skin (receiver.css + Sofia fonts + logo.png + splash.png) — the app
+   repo stays private. Public URL (what you paste as the Skin URL):
+     https://adam-today.github.io/wgr-cast/receiver.css
+   This same file also lives in the app repo at server/public/cast/receiver.css so
+   the dev server can serve it at http://localhost:3010/cast/receiver.css; keep the
+   two copies in sync. The absolute font/logo/splash URLs below always point at the
+   public wgr-cast host so the skin renders identically wherever it's loaded.
+
+   Brand palette:
+     ink / background  #1A0A2E   (dark purple — keeps the default white text legible)
+     accent / progress #E8430A   (red-orange)
+     pop               #FF00FF   (magenta)
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* The receiver applies ONE font to every bit of card text (title, artist,
+   album, timestamps), so we use the app's condensed body face — far more
+   legible at 10-foot TV distance than the marker display font. Loaded over
+   HTTPS from the same GitHub Pages host as this CSS (see URLs below).
+   The marker font (ChiselTipMarkers) only lives in the logo IMAGE — see note. */
+@font-face {
+  font-family: "SofiaSemiCond";
+  src: url("https://adam-today.github.io/wgr-cast/fonts/SofiaSansSemiCondensed-Regular.ttf") format("truetype");
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: "SofiaSemiCond";
+  src: url("https://adam-today.github.io/wgr-cast/fonts/SofiaSansSemiCondensed-SemiBold.ttf") format("truetype");
+  font-weight: 600; font-display: swap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   NO-ARTWORK FALLBACK
+   The now-playing image comes only from the SENDER's MediaMetadata.images[] —
+   there's no CSS hook for it. When a track/station has no art, the sender sends
+   our cream "unwinding monkey" card instead (app/src/services/cast.ts →
+   castLoadStation → artwork ?? FALLBACK_ARTWORK, served from
+   /cast/media/no-artwork.png). So the now-playing card always shows on-brand
+   artwork; the flat --background-color (plum) below only shows through around it.
+   ───────────────────────────────────────────────────────────────────────── */
+
+cast-media-player {
+  /* Card background behind the artwork + metadata */
+  --background-color: #1A0A2E;
+
+  /* Idle / loading splash (shown before media starts). Swap for a branded
+     splash image once you have one hosted alongside this file. */
+  --splash-image: url("https://adam-today.github.io/wgr-cast/splash.png");
+  --splash-size: cover;
+  --splash-position: center center;
+
+  /* Station logo, drawn in the corner of the card. Drop a transparent PNG
+     (≈ 400×120, white/light artwork) next to this file. */
+  --logo-image: url("https://adam-today.github.io/wgr-cast/logo.png");
+  --logo-repeat: no-repeat;
+  --logo-position: top left;
+  --logo-size: 280px;
+
+  /* Seek / progress bar fill — purple, a shade brighter than the plum bg */
+  --progress-color: #3A1E5F;
+
+  /* Buffering + spinner accents */
+  --buffering-color: #FF00FF;
+  --break-color: #FF00FF;
+
+  /* Tints the receiver UI toward the brand hue. ~14 ≈ red-orange.
+     (theme-hue is 0–360; it tints controls/overlays, not the background.) */
+  --theme-hue: 14;
+
+  /* Title (track) + subtitle (artist / station) text.
+     Note: not every CAF build honors text-color overrides — the dark
+     --background-color above is what guarantees the default white text reads
+     well, so treat these as best-effort. */
+  --title-color: #FFFFFF;
+  --subtitle-color: #FF8A00;
+
+  /* All card text in the app's condensed face (@font-face'd above). Falls back
+     to a system sans if the font can't be fetched. */
+  --font-family: "SofiaSemiCond", "Roboto", sans-serif;
+}
