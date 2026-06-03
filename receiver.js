@@ -24,6 +24,7 @@ const els = {
   title: document.getElementById('title'),
   artist: document.getElementById('artist'),
   station: document.getElementById('station'),
+  stationDesc: document.getElementById('stationDesc'),
   stationIcon: document.getElementById('stationIcon'),
   clock: document.getElementById('clock'),
 };
@@ -39,6 +40,7 @@ function render(data) {
   if (typeof data.title === 'string') els.title.textContent = data.title || 'Weird Good Radio';
   if (typeof data.artist === 'string') els.artist.textContent = data.artist || '';
   if (typeof data.station === 'string') els.station.textContent = data.station || '';
+  if (typeof data.description === 'string') els.stationDesc.textContent = data.description || '';
 
   if (typeof data.stationIcon === 'string' && data.stationIcon !== currentIcon) {
     currentIcon = data.stationIcon;

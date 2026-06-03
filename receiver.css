@@ -35,12 +35,18 @@
   src: url("https://adam-today.github.io/wgr-cast/fonts/SofiaSansSemiCondensed-SemiBold.ttf") format("truetype");
   font-weight: 600; font-display: swap;
 }
+@font-face {
+  font-family: "SpaceMono";
+  src: url("https://adam-today.github.io/wgr-cast/fonts/SpaceMono-Regular.ttf") format("truetype");
+  font-display: swap;
+}
 
 :root {
   --bg:       #1A0A2E;   /* plum background          */
   --title:    #FFFFFF;   /* track title              */
   --artist:   #FF8A00;   /* artist — orange          */
   --chrome:   #EDE6F5;   /* clock / station / live   */
+  --desc:     #B79CE6;   /* station descriptor — light purple */
   --live:     #FFE000;   /* LIVE dot — yellow        */
   --meta:     2.4vh;     /* shared size for clock / station / live */
 }
@@ -113,22 +119,30 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* Station identity, bottom-left: icon + name. */
+/* Station identity, bottom-left: icon + name + descriptor. */
 .station-box {
   position: absolute; left: 6vw; bottom: 6vh; z-index: 3;
-  display: flex; align-items: center; gap: 1.4vh;
-  max-width: 60vw;
+  display: flex; align-items: baseline; gap: 1.4vh;
+  max-width: 70vw;
 }
 .station-icon {
-  width: 4.6vh; height: 4.6vh; flex: none;
+  width: 4.6vh; height: 4.6vh; flex: none; align-self: center;
   border-radius: 0.9vh; object-fit: cover;
   background: rgba(255,255,255,0.08);
 }
 .station-icon:not([src]), .station-icon[src=""] { display: none; }
 .station-name {
   font-size: var(--meta); font-weight: 600; color: var(--chrome);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; flex: none;
 }
+/* Station descriptor — monospaced, light purple, sits next to the name. */
+.station-desc {
+  font-family: "SpaceMono", monospace;
+  font-size: calc(var(--meta) * 0.82); color: var(--desc);
+  min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.station-desc:empty { display: none; }
+.station-desc::before { content: "·"; margin-right: 0.7ch; opacity: 0.6; }
 
 /* LIVE indicator, bottom-right. */
 .live {
