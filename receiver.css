@@ -164,7 +164,7 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   display: inline-flex; align-items: center; gap: 0.8vh;
   background: #FFFFFF; color: #002FA7;
   font-size: var(--meta); font-weight: 600;
-  border-radius: 0.7vh; padding: 0.6vh 1.3vh;
+  border-radius: 0.7vh; padding: 0.3vh 1.3vh;
 }
 /* Animated broadcast-tower icon (port of the app's LiveTowerIcon): inner
    (magenta) and outer (golden) arcs cross-fade, then hold — a 2s loop. */
