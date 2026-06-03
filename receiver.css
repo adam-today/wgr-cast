@@ -1,10 +1,12 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   Weird Good Radio — Styled Media Receiver
+   Weird Good Radio — custom CAF receiver skin
    ---------------------------------------------------------------------------
-   This is the CSS file you paste as the "Receiver styling" URL in the Google
-   Cast SDK Developer Console (Styled Media Receiver type). Google hosts the
-   actual receiver runtime; these custom properties on <cast-media-player>
-   re-theme the stock now-playing card.
+   Loaded by index.html (our custom Cast receiver) via <link rel="stylesheet">.
+   These custom properties on <cast-media-player> — the same stock CAF UI
+   element used by the Styled Media Receiver — re-theme the now-playing card.
+   (We moved from a Styled Media Receiver to a custom receiver so receiver.js
+   can push live now-playing updates without rebuffering; the theming is
+   unchanged.)
 
    Hosted publicly over HTTPS via GitHub Pages from a small PUBLIC repo that holds
    ONLY this skin (receiver.css + Sofia fonts + logo.png + splash.png) — the app

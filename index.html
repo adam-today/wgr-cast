@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Weird Good Radio</title>
+
+  <!-- Brand skin. Same CSS custom properties that themed the Styled Media
+       Receiver; <cast-media-player> is the identical CAF UI element, so the
+       look carries over unchanged. -->
+  <link rel="stylesheet" href="receiver.css" />
+  <style>
+    html, body { margin: 0; height: 100%; background: #1A0A2E; overflow: hidden; }
+    cast-media-player { position: absolute; inset: 0; }
+  </style>
+
+  <!-- Google CAF receiver runtime (hosted by Google). -->
+  <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+</head>
+<body>
+  <cast-media-player></cast-media-player>
+  <script src="receiver.js"></script>
+</body>
+</html>
