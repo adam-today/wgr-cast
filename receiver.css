@@ -8,9 +8,9 @@
    Layout:
      • logo            top-left
      • clock           top-right
-     • album art       left
-     • track + artist  text lockup, right  (Sofia semibold / Sofia regular)
-     • station icon + name   bottom-left
+     • track + artist  text lockup, left   (Sofia semibold / Sofia regular)
+     • album art       right (fixed square, % of screen height)
+     • station icon + name + descriptor   bottom-left
      • LIVE            bottom-right
    The clock, station name and LIVE label share one face + size (SofiaSemiCond);
    the LIVE dot pulses yellow.
@@ -83,17 +83,18 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   color: var(--chrome); opacity: 0.85;
 }
 
-/* Now-playing row: art on the left, track/artist lockup on the right.
+/* Now-playing row: track/artist lockup on the left, art on the right.
    Fills the screen and centers vertically — the bottom-left station box and
    bottom-right LIVE are absolutely positioned, so they don't shift this. */
 .content {
   position: absolute; inset: 0; z-index: 2;
-  display: flex; align-items: center; gap: 5vw;
+  display: flex; flex-direction: row-reverse; align-items: center; gap: 5vw;
   padding: 0 6vw;
 }
 
+/* Album art — fixed square, always the same size (40% of screen height). */
 .art {
-  width: 38vh; height: 38vh; flex: none;
+  width: 40vh; height: 40vh; flex: none;
   border-radius: 1.2vh;
   background: #f1e9dd center / cover no-repeat;
   box-shadow: 0 2vh 6vh rgba(0,0,0,0.45);
@@ -144,9 +145,9 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
 .station-desc:empty { display: none; }
 .station-desc::before { content: "·"; margin-right: 0.7ch; opacity: 0.6; }
 
-/* LIVE indicator, bottom-right. */
+/* LIVE indicator, bottom-right. Right edge aligns with the clock (right: 4vw). */
 .live {
-  position: absolute; right: 6vw; bottom: 6vh; z-index: 3;
+  position: absolute; right: 4vw; bottom: 6vh; z-index: 3;
   display: inline-flex; align-items: center; gap: 1.1vh;
   font-size: var(--meta); font-weight: 600; letter-spacing: 0.12em;
   color: var(--chrome);
