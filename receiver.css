@@ -77,11 +77,13 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   color: var(--chrome); opacity: 0.85;
 }
 
-/* Centered now-playing row: art on the left, track/artist lockup on the right. */
+/* Now-playing row: art on the left, track/artist lockup on the right.
+   Fills the screen and centers vertically — the bottom-left station box and
+   bottom-right LIVE are absolutely positioned, so they don't shift this. */
 .content {
   position: absolute; inset: 0; z-index: 2;
   display: flex; align-items: center; gap: 5vw;
-  padding: 4vh 6vw 16vh;
+  padding: 0 6vw;
 }
 
 .art {
