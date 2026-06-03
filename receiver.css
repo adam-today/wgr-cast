@@ -120,16 +120,11 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* Very soft keyline above the bottom row, spanning the 4vw margins and fading
-   out at both ends. */
+/* Soft solid keyline above the bottom row, spanning the 4vw margins. */
 .keyline {
-  position: absolute; left: 4vw; right: 4vw; bottom: 11vh; z-index: 1;
+  position: absolute; left: 4vw; right: 4vw; bottom: 12.5vh; z-index: 1;
   height: 1px;
-  background: linear-gradient(to right,
-    transparent,
-    rgba(255,255,255,0.13) 10%,
-    rgba(255,255,255,0.13) 90%,
-    transparent);
+  background: rgba(255,255,255,0.08);
 }
 
 /* Station identity, bottom-left: icon + name + descriptor. */
