@@ -20,18 +20,23 @@
     <img class="logo" src="logo.png" alt="Weird Good Radio" />
     <div class="clock" id="clock"></div>
 
+    <!-- Track + artist lockup, right. -->
     <div class="content">
       <div class="art" id="art"></div>
       <div class="meta">
-        <div class="title"   id="title">Weird Good Radio</div>
-        <div class="artist"  id="artist"></div>
-        <div class="station" id="station"></div>
+        <div class="title"  id="title">Weird Good Radio</div>
+        <div class="artist" id="artist"></div>
       </div>
     </div>
 
-    <div class="bar">
-      <span class="live"><span class="dot"></span> LIVE</span>
+    <!-- Station icon + name, bottom-left. -->
+    <div class="station-box">
+      <img class="station-icon" id="stationIcon" alt="" />
+      <span class="station-name" id="station"></span>
     </div>
+
+    <!-- LIVE, bottom-right. -->
+    <div class="live"><span class="dot"></span> LIVE</div>
   </div>
 
   <script src="receiver.js"></script>

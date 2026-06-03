@@ -2,9 +2,10 @@
    Weird Good Radio — custom CAF receiver
    ---------------------------------------------------------------------------
    Fully custom now-playing UI (see index.html / receiver.css): art on the left,
-   logo top-left, and a three-font text lockup on the right. We DON'T use the
-   stock <cast-media-player> chrome — that element stays in the DOM only so CAF
-   has a media element to play through; our overlay renders the visible card.
+   logo top-left, track + artist lockup on the right, station icon + name
+   bottom-left, LIVE bottom-right. We DON'T use the stock <cast-media-player>
+   chrome — that element stays in the DOM only so CAF has a media element to
+   play through; our overlay renders the visible card.
 
    We populate the card from two sources, both funnelled through render():
      1. The player itself (initial loadMedia + any player-driven change), via
@@ -23,33 +24,46 @@ const els = {
   title: document.getElementById('title'),
   artist: document.getElementById('artist'),
   station: document.getElementById('station'),
+  stationIcon: document.getElementById('stationIcon'),
   clock: document.getElementById('clock'),
 };
 
 let currentArt = '';
+let currentIcon = '';
 
-/** Paint the card. data: { title, artist, album, image }. */
+/** Paint the card. data: { title, artist, station, stationIcon, image }.
+    Only fields actually present on `data` are updated, so a player-driven
+    refresh (no stationIcon) never wipes the station identity a push set. */
 function render(data) {
   if (!data) return;
   if (typeof data.title === 'string') els.title.textContent = data.title || 'Weird Good Radio';
   if (typeof data.artist === 'string') els.artist.textContent = data.artist || '';
-  if (typeof data.album === 'string') els.station.textContent = data.album || '';
+  if (typeof data.station === 'string') els.station.textContent = data.station || '';
 
-  const img = data.image || FALLBACK_IMAGE;
-  if (img !== currentArt) {
-    currentArt = img;
-    els.art.style.backgroundImage = `url("${img}")`;
+  if (typeof data.stationIcon === 'string' && data.stationIcon !== currentIcon) {
+    currentIcon = data.stationIcon;
+    if (data.stationIcon) els.stationIcon.setAttribute('src', data.stationIcon);
+    else els.stationIcon.removeAttribute('src');
+  }
+
+  if (typeof data.image === 'string' || data.image == null) {
+    const img = data.image || FALLBACK_IMAGE;
+    if (img !== currentArt) {
+      currentArt = img;
+      els.art.style.backgroundImage = `url("${img}")`;
+    }
   }
 }
 
-/** Normalize the player's current MediaInformation into render()'s shape. */
+/** Normalize the player's current MediaInformation into render()'s shape.
+    (No stationIcon here — that only arrives via the custom message channel.) */
 function fromPlayer(playerData) {
   const md = (playerData && playerData.metadata) || {};
   const image = md.images && md.images[0] && md.images[0].url;
   return {
     title: md.title || (playerData && playerData.title) || '',
     artist: md.artist || md.subtitle || '',
-    album: md.albumName || '',
+    station: md.albumName || '',
     image: image || FALLBACK_IMAGE,
   };
 }
@@ -89,7 +103,7 @@ context.addCustomMessageListener(NAMESPACE, (event) => {
       const md = new cast.framework.messages.MusicTrackMediaMetadata();
       md.title = data.title || '';
       if (data.artist) md.artist = data.artist;
-      if (data.album) md.albumName = data.album;
+      if (data.station) md.albumName = data.station;
       md.images = [new cast.framework.messages.Image(data.image || FALLBACK_IMAGE)];
       info.metadata = md;
       playerManager.setMediaInformation(info, true);

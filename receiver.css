@@ -1,25 +1,28 @@
 /* ───────────────────────────────────────────────────────────────────────────
    Weird Good Radio — custom CAF receiver styles
    ---------------------------------------------------------------------------
-   This is now a FULLY CUSTOM receiver UI (not the stock <cast-media-player>),
-   so we're free of the Styled Media Receiver's "one font, fixed layout" limits.
-   index.html lays out our own now-playing card; receiver.js drives it from the
-   player + a custom message channel (live updates, no rebuffer).
+   FULLY CUSTOM receiver UI (not the stock <cast-media-player>). index.html lays
+   out our now-playing card; receiver.js drives it from the player + a custom
+   message channel (live updates, no rebuffer).
 
-   Layout: logo top-left, clock top-right, album art on the left, and a
-   text lockup on the right —
-     track   → SofiaSemiCond  (condensed sans, semibold)
-     artist  → SofiaSemiCond  (condensed sans, regular, orange)
-     station → SpaceMono      (mono callsign, uppercase + tracked)
+   Layout:
+     • logo            top-left
+     • clock           top-right
+     • album art       left
+     • track + artist  text lockup, right  (Sofia semibold / Sofia regular)
+     • station icon + name   bottom-left
+     • LIVE            bottom-right
+   The clock, station name and LIVE label share one face + size (SofiaSemiCond);
+   the LIVE dot pulses yellow.
 
-   Hosted publicly over HTTPS via GitHub Pages from the wgr-cast PUBLIC repo;
-   mirrored in the app repo at server/public/cast/ — keep the two in sync.
+   Hosted publicly over HTTPS via GitHub Pages (wgr-cast PUBLIC repo); mirrored
+   in the app repo at server/public/cast/ — keep the two in sync.
 
    Brand palette:
      ink / background  #1A0A2E   (dark purple)
-     accent / artist   #FF8A00   (orange)
-     pop / live        #FF00FF   (magenta)
-     progress          #3A1E5F   (purple, brighter than the plum bg)
+     artist            #FF8A00   (orange)
+     live dot          #FFE000   (yellow)
+     progress          #3A1E5F   (purple)
    ─────────────────────────────────────────────────────────────────────────── */
 
 @font-face {
@@ -32,19 +35,14 @@
   src: url("https://adam-today.github.io/wgr-cast/fonts/SofiaSansSemiCondensed-SemiBold.ttf") format("truetype");
   font-weight: 600; font-display: swap;
 }
-@font-face {
-  font-family: "SpaceMono";
-  src: url("https://adam-today.github.io/wgr-cast/fonts/SpaceMono-Regular.ttf") format("truetype");
-  font-display: swap;
-}
 
 :root {
   --bg:       #1A0A2E;   /* plum background          */
   --title:    #FFFFFF;   /* track title              */
   --artist:   #FF8A00;   /* artist — orange          */
-  --station:  #C9B8E0;   /* station callsign — muted lilac */
-  --live:     #FF00FF;   /* LIVE pop                 */
-  --progress: #3A1E5F;   /* progress fill            */
+  --chrome:   #EDE6F5;   /* clock / station / live   */
+  --live:     #FFE000;   /* LIVE dot — yellow        */
+  --meta:     2.4vh;     /* shared size for clock / station / live */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,7 +50,7 @@ html, body { height: 100%; }
 body {
   background: var(--bg);
   overflow: hidden;
-  /* The internal CAF media player still handles audio; we cover it with our UI. */
+  font-family: "SofiaSemiCond", "Roboto", sans-serif;
 }
 
 /* Stock player kept in the DOM only so CAF has its media element for playback.
@@ -72,18 +70,18 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   width: 22vw; max-width: 320px; height: auto;
 }
 
-/* Wall clock, top-right (matches the CAF convention). */
+/* Wall clock, top-right. */
 .clock {
   position: absolute; top: 5vh; right: 4vw; z-index: 3;
-  font-family: "SpaceMono", monospace;
-  font-size: 2.4vh; letter-spacing: 0.05em; opacity: 0.8;
+  font-size: var(--meta); font-weight: 600; letter-spacing: 0.04em;
+  color: var(--chrome); opacity: 0.85;
 }
 
-/* Centered now-playing row: art on the left, lockup on the right. */
+/* Centered now-playing row: art on the left, track/artist lockup on the right. */
 .content {
   position: absolute; inset: 0; z-index: 2;
   display: flex; align-items: center; gap: 5vw;
-  padding: 4vh 6vw 12vh;
+  padding: 4vh 6vw 16vh;
 }
 
 .art {
@@ -97,7 +95,6 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
 
 /* Track title — condensed sans, semibold. */
 .title {
-  font-family: "SofiaSemiCond", "Roboto", sans-serif;
   font-weight: 600;
   color: var(--title);
   font-size: 6.4vh; line-height: 1.08;
@@ -108,30 +105,38 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
 
 /* Artist — same condensed sans, regular weight, orange. */
 .artist {
-  font-family: "SofiaSemiCond", "Roboto", sans-serif;
   font-weight: 400;
   color: var(--artist);
   font-size: 4vh; line-height: 1.1;
-  margin-bottom: 2vh;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* Station — mono callsign, uppercase + tracked. */
-.station {
-  font-family: "SpaceMono", monospace;
-  color: var(--station);
-  font-size: 2.2vh; letter-spacing: 0.18em; text-transform: uppercase;
+/* Station identity, bottom-left: icon + name. */
+.station-box {
+  position: absolute; left: 6vw; bottom: 6vh; z-index: 3;
+  display: flex; align-items: center; gap: 1.4vh;
+  max-width: 60vw;
+}
+.station-icon {
+  width: 4.6vh; height: 4.6vh; flex: none;
+  border-radius: 0.9vh; object-fit: cover;
+  background: rgba(255,255,255,0.08);
+}
+.station-icon:not([src]), .station-icon[src=""] { display: none; }
+.station-name {
+  font-size: var(--meta); font-weight: 600; color: var(--chrome);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* LIVE indicator, bottom-left. */
-.bar { position: absolute; left: 6vw; right: 6vw; bottom: 6vh; z-index: 3; }
+/* LIVE indicator, bottom-right. */
 .live {
-  display: inline-flex; align-items: center; gap: 1vh;
-  font-family: "SpaceMono", monospace;
-  font-size: 1.9vh; letter-spacing: 0.2em; font-weight: 700;
+  position: absolute; right: 6vw; bottom: 6vh; z-index: 3;
+  display: inline-flex; align-items: center; gap: 1.1vh;
+  font-size: var(--meta); font-weight: 600; letter-spacing: 0.12em;
+  color: var(--chrome);
 }
 .live .dot {
-  width: 1.2vh; height: 1.2vh; border-radius: 50%;
+  width: 1.3vh; height: 1.3vh; border-radius: 50%;
   background: var(--live); animation: pulse 1.4s infinite;
 }
 @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.2 } }
