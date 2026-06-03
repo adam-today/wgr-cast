@@ -122,7 +122,8 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
 
 /* Station identity, bottom-left: icon + name + descriptor. */
 .station-box {
-  position: absolute; left: 6vw; bottom: 6vh; z-index: 3;
+  /* left edge lines up with the top-left logo (both at 4vw). */
+  position: absolute; left: 4vw; bottom: 6vh; z-index: 3;
   display: flex; align-items: baseline; gap: 1.4vh;
   max-width: 70vw;
 }
