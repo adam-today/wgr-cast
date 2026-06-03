@@ -76,11 +76,11 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   width: 22vw; max-width: 320px; height: auto;
 }
 
-/* Wall clock, top-right. */
+/* Wall clock, top-right — light-purple monospace, matching the station descriptor. */
 .clock {
   position: absolute; top: 5vh; right: 4vw; z-index: 3;
-  font-size: var(--meta); font-weight: 600;
-  color: var(--chrome); opacity: 0.85;
+  font-family: "SpaceMono", monospace;
+  font-size: var(--meta); color: var(--desc);
 }
 
 /* Now-playing row: track/artist lockup on the left, art on the right.
@@ -120,13 +120,6 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* Soft solid keyline above the bottom row, spanning the 4vw margins. */
-.keyline {
-  position: absolute; left: 4vw; right: 4vw; bottom: 12.5vh; z-index: 1;
-  height: 1px;
-  background: rgba(255,255,255,0.08);
-}
-
 /* Station identity, bottom-left: icon + name + descriptor. */
 .station-box {
   /* left edge lines up with the top-left logo (both at 4vw). */
@@ -157,12 +150,12 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
 .station-desc:empty { display: none; }
 .station-desc::before { content: "·"; margin-right: 0.7ch; opacity: 0.6; }
 
-/* LIVE indicator, bottom-right — white pill with blue text, matching the app's
-   now-playing live badge. Right edge aligns with the clock (right: 4vw). */
+/* LIVE indicator, bottom-right — blue pill with white text.
+   Right edge aligns with the clock (right: 4vw). */
 .live {
   position: absolute; right: 4vw; bottom: 6vh; z-index: 3;
   display: inline-flex; align-items: center; gap: 0.8vh;
-  background: #FFFFFF; color: #002FA7;
+  background: #002FA7; color: #FFFFFF;
   font-size: var(--meta); font-weight: 600;
   border-radius: 0.7vh; padding: 0.3vh 1.3vh;
 }
