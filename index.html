@@ -5,20 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Weird Good Radio</title>
 
-  <!-- Brand skin. Same CSS custom properties that themed the Styled Media
-       Receiver; <cast-media-player> is the identical CAF UI element, so the
-       look carries over unchanged. -->
   <link rel="stylesheet" href="receiver.css" />
-  <style>
-    html, body { margin: 0; height: 100%; background: #1A0A2E; overflow: hidden; }
-    cast-media-player { position: absolute; inset: 0; }
-  </style>
 
   <!-- Google CAF receiver runtime (hosted by Google). -->
   <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
 </head>
 <body>
+  <!-- Kept in the DOM so CAF has a media element for playback; our .tv overlay
+       (opaque, higher z-index) fully hides its stock UI. -->
   <cast-media-player></cast-media-player>
+
+  <!-- Our custom now-playing card. -->
+  <div class="tv">
+    <img class="logo" src="logo.png" alt="Weird Good Radio" />
+    <div class="clock" id="clock"></div>
+
+    <div class="content">
+      <div class="art" id="art"></div>
+      <div class="meta">
+        <div class="title"   id="title">Weird Good Radio</div>
+        <div class="artist"  id="artist"></div>
+        <div class="station" id="station"></div>
+      </div>
+    </div>
+
+    <div class="bar">
+      <span class="live"><span class="dot"></span> LIVE</span>
+    </div>
+  </div>
+
   <script src="receiver.js"></script>
 </body>
 </html>

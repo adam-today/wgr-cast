@@ -1,33 +1,32 @@
 /* ───────────────────────────────────────────────────────────────────────────
-   Weird Good Radio — custom CAF receiver skin
+   Weird Good Radio — custom CAF receiver styles
    ---------------------------------------------------------------------------
-   Loaded by index.html (our custom Cast receiver) via <link rel="stylesheet">.
-   These custom properties on <cast-media-player> — the same stock CAF UI
-   element used by the Styled Media Receiver — re-theme the now-playing card.
-   (We moved from a Styled Media Receiver to a custom receiver so receiver.js
-   can push live now-playing updates without rebuffering; the theming is
-   unchanged.)
+   This is now a FULLY CUSTOM receiver UI (not the stock <cast-media-player>),
+   so we're free of the Styled Media Receiver's "one font, fixed layout" limits.
+   index.html lays out our own now-playing card; receiver.js drives it from the
+   player + a custom message channel (live updates, no rebuffer).
 
-   Hosted publicly over HTTPS via GitHub Pages from a small PUBLIC repo that holds
-   ONLY this skin (receiver.css + Sofia fonts + logo.png + splash.png) — the app
-   repo stays private. Public URL (what you paste as the Skin URL):
-     https://adam-today.github.io/wgr-cast/receiver.css
-   This same file also lives in the app repo at server/public/cast/receiver.css so
-   the dev server can serve it at http://localhost:3010/cast/receiver.css; keep the
-   two copies in sync. The absolute font/logo/splash URLs below always point at the
-   public wgr-cast host so the skin renders identically wherever it's loaded.
+   Layout: logo top-left, clock top-right, album art on the left, and a
+   three-font text lockup on the right —
+     track   → ChiselTipMarkers   (marker display face — the brand headline)
+     artist  → SofiaSemiCond      (clean condensed sans)
+     station → SpaceMono          (mono callsign, uppercase + tracked)
+
+   Hosted publicly over HTTPS via GitHub Pages from the wgr-cast PUBLIC repo;
+   mirrored in the app repo at server/public/cast/ — keep the two in sync.
 
    Brand palette:
-     ink / background  #1A0A2E   (dark purple — keeps the default white text legible)
-     accent / progress #E8430A   (red-orange)
-     pop               #FF00FF   (magenta)
+     ink / background  #1A0A2E   (dark purple)
+     accent / artist   #FF8A00   (orange)
+     pop / live        #FF00FF   (magenta)
+     progress          #3A1E5F   (purple, brighter than the plum bg)
    ─────────────────────────────────────────────────────────────────────────── */
 
-/* The receiver applies ONE font to every bit of card text (title, artist,
-   album, timestamps), so we use the app's condensed body face — far more
-   legible at 10-foot TV distance than the marker display font. Loaded over
-   HTTPS from the same GitHub Pages host as this CSS (see URLs below).
-   The marker font (ChiselTipMarkers) only lives in the logo IMAGE — see note. */
+@font-face {
+  font-family: "ChiselTipMarkers";
+  src: url("https://adam-today.github.io/wgr-cast/fonts/ChiselTipMarkers-ZPnz.ttf") format("truetype");
+  font-display: swap;
+}
 @font-face {
   font-family: "SofiaSemiCond";
   src: url("https://adam-today.github.io/wgr-cast/fonts/SofiaSansSemiCondensed-Regular.ttf") format("truetype");
@@ -38,53 +37,105 @@
   src: url("https://adam-today.github.io/wgr-cast/fonts/SofiaSansSemiCondensed-SemiBold.ttf") format("truetype");
   font-weight: 600; font-display: swap;
 }
-
-/* ─────────────────────────────────────────────────────────────────────────
-   NO-ARTWORK FALLBACK
-   The now-playing image comes only from the SENDER's MediaMetadata.images[] —
-   there's no CSS hook for it. When a track/station has no art, the sender sends
-   our cream "unwinding monkey" card instead (app/src/services/cast.ts →
-   castLoadStation → artwork ?? FALLBACK_ARTWORK, served from
-   /cast/media/no-artwork.png). So the now-playing card always shows on-brand
-   artwork; the flat --background-color (plum) below only shows through around it.
-   ───────────────────────────────────────────────────────────────────────── */
-
-cast-media-player {
-  /* Card background behind the artwork + metadata */
-  --background-color: #1A0A2E;
-
-  /* Idle / loading splash (shown before media starts). Swap for a branded
-     splash image once you have one hosted alongside this file. */
-  --splash-image: url("https://adam-today.github.io/wgr-cast/splash.png");
-  --splash-size: cover;
-  --splash-position: center center;
-
-  /* Station logo, drawn in the corner of the card. Drop a transparent PNG
-     (≈ 400×120, white/light artwork) next to this file. */
-  --logo-image: url("https://adam-today.github.io/wgr-cast/logo.png");
-  --logo-repeat: no-repeat;
-  --logo-position: top left;
-  --logo-size: 280px;
-
-  /* Seek / progress bar fill — purple, a shade brighter than the plum bg */
-  --progress-color: #3A1E5F;
-
-  /* Buffering + spinner accents */
-  --buffering-color: #FF00FF;
-  --break-color: #FF00FF;
-
-  /* Tints the receiver UI toward the brand hue. ~14 ≈ red-orange.
-     (theme-hue is 0–360; it tints controls/overlays, not the background.) */
-  --theme-hue: 14;
-
-  /* Title (track) + subtitle (artist / station) text.
-     Note: not every CAF build honors text-color overrides — the dark
-     --background-color above is what guarantees the default white text reads
-     well, so treat these as best-effort. */
-  --title-color: #FFFFFF;
-  --subtitle-color: #FF8A00;
-
-  /* All card text in the app's condensed face (@font-face'd above). Falls back
-     to a system sans if the font can't be fetched. */
-  --font-family: "SofiaSemiCond", "Roboto", sans-serif;
+@font-face {
+  font-family: "SpaceMono";
+  src: url("https://adam-today.github.io/wgr-cast/fonts/SpaceMono-Regular.ttf") format("truetype");
+  font-display: swap;
 }
+
+:root {
+  --bg:       #1A0A2E;   /* plum background          */
+  --title:    #FFFFFF;   /* track title              */
+  --artist:   #FF8A00;   /* artist — orange          */
+  --station:  #C9B8E0;   /* station callsign — muted lilac */
+  --live:     #FF00FF;   /* LIVE pop                 */
+  --progress: #3A1E5F;   /* progress fill            */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  overflow: hidden;
+  /* The internal CAF media player still handles audio; we cover it with our UI. */
+}
+
+/* Stock player kept in the DOM only so CAF has its media element for playback.
+   Our opaque overlay (.tv) sits on top and hides it entirely. */
+cast-media-player { position: absolute; inset: 0; z-index: 0; }
+
+.tv {
+  position: absolute; inset: 0; z-index: 10;
+  background: var(--bg);
+  color: var(--title);
+  overflow: hidden;
+}
+
+/* Logo — transparent PNG wordmark, top-left. */
+.logo {
+  position: absolute; top: 4.5vh; left: 4vw; z-index: 3;
+  width: 22vw; max-width: 320px; height: auto;
+}
+
+/* Wall clock, top-right (matches the CAF convention). */
+.clock {
+  position: absolute; top: 5vh; right: 4vw; z-index: 3;
+  font-family: "SpaceMono", monospace;
+  font-size: 2.4vh; letter-spacing: 0.05em; opacity: 0.8;
+}
+
+/* Centered now-playing row: art on the left, lockup on the right. */
+.content {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; align-items: center; gap: 5vw;
+  padding: 4vh 6vw 12vh;
+}
+
+.art {
+  width: 38vh; height: 38vh; flex: none;
+  border-radius: 1.2vh;
+  background: #f1e9dd center / cover no-repeat;
+  box-shadow: 0 2vh 6vh rgba(0,0,0,0.45);
+}
+
+.meta { min-width: 0; flex: 1; }
+
+/* Track title — the marker display face, the brand's loud headline. */
+.title {
+  font-family: "ChiselTipMarkers", system-ui, sans-serif;
+  color: var(--title);
+  font-size: 7vh; line-height: 1.05;
+  margin-bottom: 1.6vh;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Artist — clean condensed sans, orange. */
+.artist {
+  font-family: "SofiaSemiCond", "Roboto", sans-serif;
+  font-weight: 600;
+  color: var(--artist);
+  font-size: 4vh; line-height: 1.1;
+  margin-bottom: 2vh;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Station — mono callsign, uppercase + tracked. */
+.station {
+  font-family: "SpaceMono", monospace;
+  color: var(--station);
+  font-size: 2.2vh; letter-spacing: 0.18em; text-transform: uppercase;
+}
+
+/* LIVE indicator, bottom-left. */
+.bar { position: absolute; left: 6vw; right: 6vw; bottom: 6vh; z-index: 3; }
+.live {
+  display: inline-flex; align-items: center; gap: 1vh;
+  font-family: "SpaceMono", monospace;
+  font-size: 1.9vh; letter-spacing: 0.2em; font-weight: 700;
+}
+.live .dot {
+  width: 1.2vh; height: 1.2vh; border-radius: 50%;
+  background: var(--live); animation: pulse 1.4s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.2 } }
