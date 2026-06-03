@@ -17,6 +17,11 @@
 // src/services/cast.ts. Custom namespaces must be of the form urn:x-cast:<id>.
 const NAMESPACE = 'urn:x-cast:design.today.wgr';
 
+// Cream "unwinding monkey" card, shown whenever a track has no real album art.
+// Hosted alongside this file so the receiver is self-sufficient — it falls back
+// here even if a metadata push arrives with an empty image.
+const FALLBACK_IMAGE = 'https://adam-today.github.io/wgr-cast/no-artwork.png';
+
 const context = cast.framework.CastReceiverContext.getInstance();
 const playerManager = context.getPlayerManager();
 
@@ -32,7 +37,7 @@ function applyMetadata(data) {
   md.title = data.title || '';
   if (data.artist) md.artist = data.artist;
   if (data.album) md.albumName = data.album;
-  if (data.image) md.images = [new cast.framework.messages.Image(data.image)];
+  md.images = [new cast.framework.messages.Image(data.image || FALLBACK_IMAGE)];
 
   info.metadata = md;
   // broadcast=true keeps connected senders' status in sync. This updates only
