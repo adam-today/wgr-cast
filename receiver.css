@@ -153,7 +153,9 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
 /* LIVE indicator, bottom-right — blue pill with white text.
    Right edge aligns with the clock (right: 4vw). */
 .live {
-  position: absolute; right: 4vw; bottom: 6vh; z-index: 3;
+  /* Dropped ~the pill's bottom padding so the LIVE text baseline lines up with
+     the station info on the left (which sits at bottom: 6vh, no pill). */
+  position: absolute; right: 4vw; bottom: 5.6vh; z-index: 3;
   display: inline-flex; align-items: center; gap: 0.8vh;
   background: #002FA7; color: #FFFFFF;
   font-size: var(--meta); font-weight: 600;
