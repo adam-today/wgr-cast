@@ -7,10 +7,10 @@
    player + a custom message channel (live updates, no rebuffer).
 
    Layout: logo top-left, clock top-right, album art on the left, and a
-   three-font text lockup on the right —
-     track   → ChiselTipMarkers   (marker display face — the brand headline)
-     artist  → SofiaSemiCond      (clean condensed sans)
-     station → SpaceMono          (mono callsign, uppercase + tracked)
+   text lockup on the right —
+     track   → SofiaSemiCond  (condensed sans, semibold)
+     artist  → SofiaSemiCond  (condensed sans, regular, orange)
+     station → SpaceMono      (mono callsign, uppercase + tracked)
 
    Hosted publicly over HTTPS via GitHub Pages from the wgr-cast PUBLIC repo;
    mirrored in the app repo at server/public/cast/ — keep the two in sync.
@@ -22,11 +22,6 @@
      progress          #3A1E5F   (purple, brighter than the plum bg)
    ─────────────────────────────────────────────────────────────────────────── */
 
-@font-face {
-  font-family: "ChiselTipMarkers";
-  src: url("https://adam-today.github.io/wgr-cast/fonts/ChiselTipMarkers-ZPnz.ttf") format("truetype");
-  font-display: swap;
-}
 @font-face {
   font-family: "SofiaSemiCond";
   src: url("https://adam-today.github.io/wgr-cast/fonts/SofiaSansSemiCondensed-Regular.ttf") format("truetype");
@@ -100,20 +95,21 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
 
 .meta { min-width: 0; flex: 1; }
 
-/* Track title — the marker display face, the brand's loud headline. */
+/* Track title — condensed sans, semibold. */
 .title {
-  font-family: "ChiselTipMarkers", system-ui, sans-serif;
+  font-family: "SofiaSemiCond", "Roboto", sans-serif;
+  font-weight: 600;
   color: var(--title);
-  font-size: 7vh; line-height: 1.05;
+  font-size: 6.4vh; line-height: 1.08;
   margin-bottom: 1.6vh;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Artist — clean condensed sans, orange. */
+/* Artist — same condensed sans, regular weight, orange. */
 .artist {
   font-family: "SofiaSemiCond", "Roboto", sans-serif;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--artist);
   font-size: 4vh; line-height: 1.1;
   margin-bottom: 2vh;
