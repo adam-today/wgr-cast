@@ -157,16 +157,18 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
 .station-desc:empty { display: none; }
 .station-desc::before { content: "·"; margin-right: 0.7ch; opacity: 0.6; }
 
-/* LIVE indicator, bottom-right. Right edge aligns with the clock (right: 4vw). */
+/* LIVE indicator, bottom-right — white pill with blue text, matching the app's
+   now-playing live badge. Right edge aligns with the clock (right: 4vw). */
 .live {
   position: absolute; right: 4vw; bottom: 6vh; z-index: 3;
-  display: inline-flex; align-items: center; gap: 1.1vh;
+  display: inline-flex; align-items: center; gap: 0.8vh;
+  background: #FFFFFF; color: #002FA7;
   font-size: var(--meta); font-weight: 600;
-  color: var(--chrome);
+  border-radius: 0.7vh; padding: 0.6vh 1.3vh;
 }
 /* Animated broadcast-tower icon (port of the app's LiveTowerIcon): inner
    (magenta) and outer (golden) arcs cross-fade, then hold — a 2s loop. */
-.live-icon { height: 2.9vh; width: auto; display: block; }
+.live-icon { height: 2.4vh; width: auto; display: block; }
 .live-icon .wave-inner { opacity: 1;   animation: liveInner 2s infinite; }
 .live-icon .wave-outer { opacity: 0.2; animation: liveOuter 2s infinite; }
 @keyframes liveInner { 0% { opacity: 1 }   25% { opacity: 0.2 } 50% { opacity: 1 }   100% { opacity: 1 } }
