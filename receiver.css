@@ -169,8 +169,10 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   font-size: var(--meta); font-weight: 600;
   color: var(--chrome);
 }
-.live .dot {
-  width: 1.3vh; height: 1.3vh; border-radius: 50%;
-  background: var(--live); animation: pulse 1.4s infinite;
-}
-@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.2 } }
+/* Animated broadcast-tower icon (port of the app's LiveTowerIcon): inner
+   (magenta) and outer (golden) arcs cross-fade, then hold — a 2s loop. */
+.live-icon { height: 2.9vh; width: auto; display: block; }
+.live-icon .wave-inner { opacity: 1;   animation: liveInner 2s infinite; }
+.live-icon .wave-outer { opacity: 0.2; animation: liveOuter 2s infinite; }
+@keyframes liveInner { 0% { opacity: 1 }   25% { opacity: 0.2 } 50% { opacity: 1 }   100% { opacity: 1 } }
+@keyframes liveOuter { 0% { opacity: 0.2 } 25% { opacity: 1 }   50% { opacity: 0.2 } 100% { opacity: 0.2 } }
