@@ -92,9 +92,9 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   padding: 0 6vw;
 }
 
-/* Album art — fixed square, always the same size (40% of screen height). */
+/* Album art — fixed square, always the same size (60% of screen height). */
 .art {
-  width: 40vh; height: 40vh; flex: none;
+  width: 60vh; height: 60vh; flex: none;
   border-radius: 1.2vh;
   background: #f1e9dd center / cover no-repeat;
   box-shadow: 0 2vh 6vh rgba(0,0,0,0.45);
