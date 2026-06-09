@@ -27,6 +27,7 @@ const els = {
   stationDesc: document.getElementById('stationDesc'),
   stationIcon: document.getElementById('stationIcon'),
   clock: document.getElementById('clock'),
+  bars: document.getElementById('bars'),
 };
 
 let currentArt = '';
@@ -41,6 +42,11 @@ function render(data) {
   if (typeof data.artist === 'string') els.artist.textContent = data.artist || '';
   if (typeof data.station === 'string') els.station.textContent = data.station || '';
   if (typeof data.description === 'string') els.stationDesc.textContent = data.description || '';
+
+  // Stream-strength bars: 1–3, mirroring the app's StreamQualityBars. Absent → leave as-is.
+  if (typeof data.quality === 'number' && els.bars) {
+    els.bars.dataset.level = String(Math.max(1, Math.min(3, Math.round(data.quality))));
+  }
 
   if (typeof data.stationIcon === 'string' && data.stationIcon !== currentIcon) {
     currentIcon = data.stationIcon;

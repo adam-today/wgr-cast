@@ -13,7 +13,7 @@
      • station icon + name + descriptor   bottom-left
      • LIVE            bottom-right
    The clock, station name and LIVE label share one face + size (SofiaSemiCond);
-   the LIVE dot pulses yellow.
+   the LIVE dot breathes aqua, with a 3-bar stream-strength indicator beside it.
 
    Hosted publicly over HTTPS via GitHub Pages (wgr-cast PUBLIC repo); mirrored
    in the app repo at server/public/cast/ — keep the two in sync.
@@ -21,7 +21,7 @@
    Brand palette:
      ink / background  #1A0A2E   (dark purple)
      artist            #FF8A00   (orange)
-     live dot          #FFE000   (yellow)
+     live dot          #2EE8D5   (aqua)
      progress          #3A1E5F   (purple)
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -47,7 +47,7 @@
   --artist:   #FF8A00;   /* artist — orange          */
   --chrome:   #EDE6F5;   /* clock / station / live   */
   --desc:     #B79CE6;   /* station descriptor — light purple */
-  --live:     #FFE000;   /* LIVE dot — yellow        */
+  --live:     #2EE8D5;   /* LIVE dot — aqua          */
   --meta:     2.4vh;     /* shared size for clock / station / live */
 }
 
@@ -159,12 +159,37 @@ cast-media-player { position: absolute; inset: 0; z-index: 0; }
   display: inline-flex; align-items: center; gap: 0.8vh;
   background: #002FA7; color: #FFFFFF;
   font-size: var(--meta); font-weight: 600;
-  border-radius: 0.7vh; padding: 0.3vh 1.3vh;
+  border-radius: 999px; padding: 0.3vh 1.6vh;
 }
-/* Animated broadcast-tower icon (port of the app's LiveTowerIcon): inner
-   (magenta) and outer (golden) arcs cross-fade, then hold — a 2s loop. */
-.live-icon { height: 2.4vh; width: auto; display: block; }
-.live-icon .wave-inner { opacity: 1;   animation: liveInner 2s infinite; }
-.live-icon .wave-outer { opacity: 0.2; animation: liveOuter 2s infinite; }
-@keyframes liveInner { 0% { opacity: 1 }   25% { opacity: 0.2 } 50% { opacity: 1 }   100% { opacity: 1 } }
-@keyframes liveOuter { 0% { opacity: 0.2 } 25% { opacity: 1 }   50% { opacity: 0.2 } 100% { opacity: 0.2 } }
+/* Breathing aqua dot — port of the app's PulsingDot. The keyframe stops
+   approximate the same asymmetric Gaussian (quick inhale, slower exhale,
+   peak ~40% through the 4.2s cycle, never fully dark). */
+.live-dot {
+  width: 1.1vh; height: 1.1vh; border-radius: 50%;
+  background: var(--live);
+  animation: liveBreathe 4.2s linear infinite;
+}
+@keyframes liveBreathe {
+  0%   { opacity: 0.24 }
+  10%  { opacity: 0.34 }
+  20%  { opacity: 0.57 }
+  30%  { opacity: 0.86 }
+  40%  { opacity: 1 }
+  50%  { opacity: 0.94 }
+  60%  { opacity: 0.80 }
+  70%  { opacity: 0.61 }
+  80%  { opacity: 0.45 }
+  90%  { opacity: 0.33 }
+  100% { opacity: 0.26 }
+}
+
+/* Stream-strength bars — cell-signal style, three rising bars. Bars at or below
+   the current level are solid; the rest sit soft. data-level set by receiver.js. */
+.bars { display: inline-flex; align-items: flex-end; gap: 0.3vh; margin-left: 0.2vh; }
+.bar  { width: 0.4vh; border-radius: 0.15vh; background: rgba(255,255,255,0.3); }
+.b1 { height: 0.7vh; }
+.b2 { height: 1.1vh; }
+.b3 { height: 1.5vh; }
+.bars[data-level="1"] .b1 { background: #FFFFFF; }
+.bars[data-level="2"] .b1, .bars[data-level="2"] .b2 { background: #FFFFFF; }
+.bars[data-level="3"] .bar { background: #FFFFFF; }
